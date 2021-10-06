@@ -6,6 +6,8 @@ set of int: throws_set = 1..21;
 array[throws_set] of var int: throws;
 array[throws_set] of var int: bonus;
 
+var int: nbStrike;
+var int: nbSpare;
 
 
 %predicates, throw : first throw of frame
@@ -97,6 +99,11 @@ constraint (not strike(19) /\ not spare(19)) -> throws[21] = 0;
 constraint throws[19] = 10 -> score = sum(i in 1..19)(throws[i]) + sum(bonus);
 constraint throws[19] < 10 -> score = sum(i in 1..20)(throws[i]) + sum(bonus);
 
+constraint nbStrike = sum(i in 1..19 where i mod 2 = 1)(bool2int(strike(i))) 
+ + bool2int(strike(20)) + bool2int(strike(21));
+
+constraint nbSpare = sum(i in 1..19 where i mod 2 = 1)(bool2int(spare(i)));
+
 
 solve :: int_search(throws, first_fail, indomain_max, complete) satisfy;
 
@@ -106,6 +113,10 @@ output
 ++
 ["Bonus finale : " ++ show(throws[21]) ++ "\n"]
 ++
-["Score = " ++ show(score)];
+["Score = " ++ show(score) ++ "\n"]
+++
+["nbStrike = " ++ show(nbStrike) ++ "\n"]
+++
+["nbSpare = " ++ show(nbSpare) ++ "\n"];
 
 
