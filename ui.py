@@ -1,7 +1,7 @@
 from minizinc import Instance, Model, Solver, Status
 from tkinter import *
 
-root = Tk() 
+root = Tk()
 
 class Table: 
     def __init__(self,root,tab,total_rows, total_columns) : 
@@ -112,6 +112,20 @@ spare_entry.grid(row=4, column=1)
 Label(root, text="NbStrike : ",).grid(row=6)
 strike_entry = Entry(root, width="10")
 strike_entry.grid(row=6, column=1)
-Button(root, text='Go !', command=go_score).grid(row=4, column=2)
+Button(root, 
+    text='Go !',
+    command=go_score,
+    bd=0,
+    relief="groove",
+    compound=CENTER,
+    bg="grey",
+    fg="black",
+    activeforeground="white",
+    activebackground="black",
+    font="arial 30",
+    pady=10,
+    padx=10,
+    borderwidth=4
+).grid(row=4, column=2)
 
 root.mainloop()
