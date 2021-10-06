@@ -9,6 +9,14 @@ array[throws_set] of var int: bonus;
 var int: nbStrike;
 var int: nbSpare;
 
+int: fixedStrikeNumber;
+int: fixedSpareNumber;
+
+bool: setStrikeBool;
+bool: setSpareBool;
+
+constraint if setStrikeBool == true then nbStrike = fixedStrikeNumber endif;
+constraint if setSpareBool == true then nbSpare = fixedSpareNumber endif;
 
 %predicates, throw : first throw of frame
 predicate spare(int: throw) = throws[throw] + throws[throw+1] = 10 /\ throws[throw] < 10;

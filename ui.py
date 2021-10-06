@@ -1,5 +1,7 @@
-from minizinc import Instance, Model, Solver
+from minizinc import Instance, Model, Solver, Status
 from tkinter import *
+
+root = Tk() 
 
 class Table: 
     def __init__(self,root,tab,total_rows, total_columns) : 
@@ -8,12 +10,6 @@ class Table:
                 self.e = Entry(root, width=15, fg='black', font=('Arial',12,'bold')) 
                 self.e.grid(row=i, column=j) 
                 self.e.insert(END, tab[i][j])
-
-root = Tk() 
-
-Label(root, text="Score : ",).grid(row=2)
-e1 = Entry(root, width="10")
-e1.grid(row=2, column=1)
 
 def check_int(str):
     try:
@@ -27,21 +23,43 @@ def go_score():
     gecode = Solver.lookup("gecode")
     instance = Instance(gecode, bowling)
     is_good_score = False
-    if(check_int(e1.get())): 
-        score = int(e1.get())
+    if(check_int(score_entry.get())): 
+        score = int(score_entry.get())
         if(score <= 300 and score >=0):
             is_good_score = True
-
     if(is_good_score == False):
         return
+    
+    if(check_int(spare_entry.get())):
+        instance["fixedSpareNumber"] = int(spare_entry.get())
+        instance["setSpareBool"] = True
+    else:
+        instance["fixedSpareNumber"] = 0
+        instance["setSpareBool"] = False
+
+    if(check_int(strike_entry.get())):
+        instance["fixedStrikeNumber"] = int(strike_entry.get())
+        instance["setStrikeBool"] = True
+    else:
+        instance["fixedStrikeNumber"] = 0
+        instance["setStrikeBool"] = False
+
     instance["score"] = score
     result = instance.solve()
+
+    new_window = Toplevel(root)
+    new_window.title("New Window")
+
+    if result.status == Status.UNSATISFIABLE:
+        print("=====UNSATISFIABLE=====")
+        Label(new_window, text="=====UNSATISFIABLE=====",).grid(row=1)
+        return
+
     throws = result["throws"]
     nb_strike = result["nbStrike"]
     nb_spare = result["nbSpare"]
 
-    new_window = Toplevel(root)
-    new_window.title("New Window")
+    
     
     if throws[18] != 10 and throws[18] + throws[19] != 10:
         normal_game = [
@@ -85,6 +103,17 @@ def go_score():
         total_columns = len(extra_game[0])
         Table(new_window, extra_game, total_rows, total_columns)
 
+Label(root, text="Score : ",).grid(row=2)
+score_entry = Entry(root, width="10")
+score_entry.grid(row=2, column=1)
 
-Button(root, text='Go !', command=go_score).grid(row=2, column=2)
+Label(root, text="NbSapre : ",).grid(row=4)
+spare_entry = Entry(root, width="10")
+spare_entry.grid(row=4, column=1)
+
+Label(root, text="NbStrike : ",).grid(row=6)
+strike_entry = Entry(root, width="10")
+strike_entry.grid(row=6, column=1)
+Button(root, text='Go !', command=go_score).grid(row=4, column=2)
+
 root.mainloop()
