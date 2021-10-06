@@ -1,6 +1,5 @@
 include "globals.mzn";
 
-
 int: score;
 set of int: throws_set = 1..21;
 array[throws_set] of var int: throws;
@@ -22,25 +21,18 @@ constraint if setSpareBool == true then nbSpare = fixedSpareNumber endif;
 predicate spare(int: throw) = throws[throw] + throws[throw+1] = 10 /\ throws[throw] < 10;
 predicate strike(int: throw) = throws[throw] = 10;
 
-
 constraint score <= 300 /\ score >= 0;
-
 
 %bonus >= 0
 constraint forall(i in throws_set)(
   bonus[i] >= 0
 );
 
-
 %0 to 10 pins per throw
 constraint forall(i in throws_set)(
   throws[i] <= 10 /\
   throws[i] >= 0
 );
-
-
-
-
 
 %0 to 10 pins per frame
 constraint forall(i in throws_set where i mod 2 = 1 /\ i <= 18)(
@@ -57,15 +49,11 @@ constraint
 %if last frame, first throw not spare or strike, second throw -> normal throws
 constraint (throws[19] < 10) -> throws[19] + throws[20] <= 10;
 
-
 %spares
 constraint forall(i in throws_set where i mod 2 = 1 /\ i <= 19)(
   spare(i) -> bonus[i] = throws[i+2]
 );
 constraint spare(19) -> bonus[19] = throws[21];
-
-
-
 
 %strikes
 constraint forall(i in throws_set where i mod 2 = 1 /\ i <= 17)(
@@ -76,19 +64,15 @@ constraint forall(i in throws_set where i mod 2 = 1 /\ i <= 17)(
 );
 constraint strike(19) -> bonus[19] = throws[20] + throws[21];
 
-
 %strike means 0 for second 'throw'
 constraint forall(i in throws_set where i mod 2 = 1 /\ i <= 18)(%18 cause last 3 throws can all be strikes
   (throws[i] = 10) -> throws[i+1] = 0
 );
 
-
-
 %no bonus points without spare or strike
 constraint forall(i in throws_set where i mod 2 = 1 /\ i <= 20)(
   (not strike(i) /\ not spare(i)) -> bonus[i] = 0
 );
-
 
 %no bonus at all on second throws
 constraint forall(i in throws_set where i mod 2 = 0)(
@@ -100,8 +84,6 @@ constraint bonus[21] = 0;
 %last throw only if spare or strike
 constraint (not strike(19) /\ not spare(19)) -> throws[21] = 0;
 
-
-
 %if 19 = 0 then 20,21 = 0
 
 constraint throws[19] = 10 -> score = sum(i in 1..19)(throws[i]) + sum(bonus);
@@ -112,9 +94,7 @@ constraint nbStrike = sum(i in 1..19 where i mod 2 = 1)(bool2int(strike(i)))
 
 constraint nbSpare = sum(i in 1..19 where i mod 2 = 1)(bool2int(spare(i)));
 
-
 solve :: int_search(throws, first_fail, indomain_max, complete) satisfy;
-
 
 output
 [show(throws[i]) ++ "|" ++ show(throws[i+1])  ++ " + " ++ show(bonus[i]) ++ "\n" | i in 1..19 where i mod 2 = 1]
