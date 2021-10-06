@@ -22,14 +22,12 @@ def go_score():
     bowling = Model("./bowling.mzn")
     gecode = Solver.lookup("gecode")
     instance = Instance(gecode, bowling)
-    is_good_score = False
-    if(check_int(score_entry.get())): 
-        score = int(score_entry.get())
-        if(score <= 300 and score >=0):
-            is_good_score = True
-    if(is_good_score == False):
+    if not(check_int(score_entry.get())): 
+        print("Mauvais score syntaxe")
         return
-    
+
+    score = int(score_entry.get())
+
     if(check_int(spare_entry.get())):
         instance["fixedSpareNumber"] = int(spare_entry.get())
         instance["setSpareBool"] = True
