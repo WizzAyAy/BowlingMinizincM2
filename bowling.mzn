@@ -4,6 +4,7 @@ int: score;
 set of int: throws_set = 1..21;
 array[throws_set] of var int: throws;
 array[throws_set] of var int: bonus;
+array[1..20] of int: setScoreThrows;
 
 var int: nbStrike;
 var int: nbSpare;
@@ -16,6 +17,10 @@ bool: setSpareBool;
 
 constraint if setStrikeBool == true then nbStrike = fixedStrikeNumber endif;
 constraint if setSpareBool == true then nbSpare = fixedSpareNumber endif;
+
+constraint forall(i in 1..20)(
+  setScoreThrows[i] != -1 -> setScoreThrows[i] = throws[i]
+);
 
 %predicates, throw : first throw of frame
 predicate spare(int: throw) = throws[throw] + throws[throw+1] = 10 /\ throws[throw] < 10;

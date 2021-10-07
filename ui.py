@@ -27,6 +27,11 @@ def go_score():
         return
 
     score = int(score_entry.get())
+    set_score_throws = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+
+    for i in range(20):
+        if(check_int(button_set_score_throws[i].get())):
+            set_score_throws[i] = int(button_set_score_throws[i].get())
 
     if(check_int(spare_entry.get())):
         instance["fixedSpareNumber"] = int(spare_entry.get())
@@ -42,7 +47,9 @@ def go_score():
         instance["fixedStrikeNumber"] = 0
         instance["setStrikeBool"] = False
 
+    
     instance["score"] = score
+    instance["setScoreThrows"] = set_score_throws
     result = instance.solve()
 
     new_window = Toplevel(root)
@@ -56,8 +63,6 @@ def go_score():
     throws = result["throws"]
     nb_strike = result["nbStrike"]
     nb_spare = result["nbSpare"]
-
-    
     
     if throws[18] != 10 and throws[18] + throws[19] != 10:
         normal_game = [
@@ -105,27 +110,23 @@ Label(root, text="Score : ",).grid(row=2)
 score_entry = Entry(root, width="10")
 score_entry.grid(row=2, column=1)
 
-Label(root, text="NbSapre : ",).grid(row=4)
-spare_entry = Entry(root, width="10")
-spare_entry.grid(row=4, column=1)
-
-Label(root, text="NbStrike : ",).grid(row=6)
+Label(root, text="NbStrike : ",).grid(row=4)
 strike_entry = Entry(root, width="10")
-strike_entry.grid(row=6, column=1)
+strike_entry.grid(row=4, column=1)
+
+Label(root, text="NbSapre : ",).grid(row=6)
+spare_entry = Entry(root, width="10")
+spare_entry.grid(row=6, column=1)
+
+button_set_score_throws = []
+for i in range(20):
+    Label(root, text="fixer coups : n" + str(i+1),).grid(row=i+8)
+    button_set_score_throws.append(Entry(root, width="10"))
+    button_set_score_throws[i].grid(row=i+8, column=1)
+
 Button(root, 
     text='Go !',
-    command=go_score,
-    bd=0,
-    relief="groove",
-    compound=CENTER,
-    bg="grey",
-    fg="black",
-    activeforeground="white",
-    activebackground="black",
-    font="arial 30",
-    pady=10,
-    padx=10,
-    borderwidth=4
-).grid(row=4, column=2)
+    command=go_score
+).grid(row=30, columnspan=2, padx=60)
 
 root.mainloop()
