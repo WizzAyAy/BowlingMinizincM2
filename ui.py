@@ -4,10 +4,13 @@ from tkinter import *
 root = Tk()
 
 class Table: 
-    def __init__(self,root,tab,total_rows, total_columns) : 
+    def __init__(self,root,tab,total_rows, total_columns,set_score_throws) : 
         for i in range(total_rows): 
             for j in range(total_columns): 
-                self.e = Entry(root, width=15, fg='black', font=('Arial',12,'bold')) 
+                if i == 1 and (set_score_throws[(j-1)*2] != -1 or set_score_throws[(j-1)*2 + 1] != -1):
+                    self.e = Entry(root, width=15, fg='red', font=('Arial',12,'bold')) 
+                else :  
+                    self.e = Entry(root, width=15, fg='black', font=('Arial',12,'bold')) 
                 self.e.grid(row=i, column=j) 
                 self.e.insert(END, tab[i][j])
 
@@ -63,13 +66,13 @@ def go_score():
     new_window.title("New Window")
 
     if result.status == Status.UNSATISFIABLE:
-        print("=====UNSATISFIABLE=====")
         Label(new_window, text="=====UNSATISFIABLE=====",).grid(row=1)
         return
 
     throws = result["throws"]
     nb_strike = result["nbStrike"]
     nb_spare = result["nbSpare"]
+    nb_fail = result["nbFail"]
     
     if throws[18] != 10 and throws[18] + throws[19] != 10:
         normal_game = [
@@ -86,11 +89,11 @@ def go_score():
             str(throws[16]) + ' | ' + str(throws[17]),
             str(throws[18]) + ' | ' + str(throws[19])
             ),
-            ('Strike : ', nb_strike, 'Spare : ', nb_spare, '', '', '', '', '', 'Score :', score),
+            ('Strike : ', nb_strike, 'Spare : ', nb_spare, 'Failed : ', nb_fail, '', '', '', 'Score :', score),
         ]    
         total_rows = len(normal_game) 
         total_columns = len(normal_game[0])
-        Table(new_window, normal_game,total_rows,total_columns)
+        Table(new_window, normal_game,total_rows,total_columns, set_score_throws)
     else:
         extra_game = [
             ('Tour : ','n°1','n°2','n°3','n°4', 'n°5', 'n°6', 'n°7', 'n°8', 'n°9', 'n°10', 'ExtraShot'),
@@ -107,11 +110,11 @@ def go_score():
             str(throws[18]) + ' | ' + str(throws[19]),
             str(throws[20]),
             ),
-            ('Strike : ', nb_strike, 'Spare : ', nb_spare, '', '', '', '', '', '', 'Score : ', score),
+            ('Strike : ', nb_strike, 'Spare : ', nb_spare, 'Failed : ', nb_fail, '', '', '', '', 'Score : ', score),
         ] 
         total_rows = len(extra_game) 
         total_columns = len(extra_game[0])
-        Table(new_window, extra_game, total_rows, total_columns)
+        Table(new_window, extra_game, total_rows, total_columns, set_score_throws)
 
 Label(root, text="Score : ",).grid(row=2)
 score_entry = Entry(root, width="10")
