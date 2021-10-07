@@ -7,7 +7,7 @@ class Table:
     def __init__(self,root,tab,total_rows, total_columns,set_score_throws) : 
         for i in range(total_rows): 
             for j in range(total_columns): 
-                if i == 1 and (set_score_throws[(j-1)*2] != -1 or set_score_throws[(j-1)*2 + 1] != -1):
+                if i == 1 and (j < 10 and (set_score_throws[(j-1)*2] != -1 or set_score_throws[(j-1)*2 + 1] != -1)):
                     self.e = Entry(root, width=15, fg='red', font=('Arial',12,'bold')) 
                 else :  
                     self.e = Entry(root, width=15, fg='black', font=('Arial',12,'bold')) 
@@ -133,8 +133,14 @@ fail_entry = Entry(root, width="10")
 fail_entry.grid(row=8, column=1)
 
 button_set_score_throws = []
-for i in range(20):
-    Label(root, text="fixer coups : n" + str(i+1),).grid(row=i+10)
+for i in range(19):
+    Label(root, text="Round : " + str(i + 1) + " Coups : 1").grid(row=i+10)
+    button_set_score_throws.append(Entry(root, width="10"))
+    button_set_score_throws[i].grid(row=i+10, column=1)
+
+    i = i + 1 
+
+    Label(root, text="Round : " + str(i + 1) + " Coups : 2").grid(row=i+10)
     button_set_score_throws.append(Entry(root, width="10"))
     button_set_score_throws[i].grid(row=i+10, column=1)
 
