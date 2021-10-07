@@ -47,6 +47,13 @@ def go_score():
         instance["fixedStrikeNumber"] = 0
         instance["setStrikeBool"] = False
 
+    if(check_int(fail_entry.get())):
+        instance["fixedFailNumber"] = int(fail_entry.get())
+        instance["setFailBool"] = True
+    else:
+        instance["fixedFailNumber"] = 0
+        instance["setFailBool"] = False
+
     
     instance["score"] = score
     instance["setScoreThrows"] = set_score_throws
@@ -118,11 +125,15 @@ Label(root, text="NbSapre : ",).grid(row=6)
 spare_entry = Entry(root, width="10")
 spare_entry.grid(row=6, column=1)
 
+Label(root, text="NbFail : ",).grid(row=8)
+fail_entry = Entry(root, width="10")
+fail_entry.grid(row=8, column=1)
+
 button_set_score_throws = []
 for i in range(20):
-    Label(root, text="fixer coups : n" + str(i+1),).grid(row=i+8)
+    Label(root, text="fixer coups : n" + str(i+1),).grid(row=i+10)
     button_set_score_throws.append(Entry(root, width="10"))
-    button_set_score_throws[i].grid(row=i+8, column=1)
+    button_set_score_throws[i].grid(row=i+10, column=1)
 
 Button(root, 
     text='Go !',

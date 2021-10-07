@@ -1,7 +1,9 @@
 score = 100;
 fixedStrikeNumber = 0;
 fixedSpareNumber = 0;
+fixedFailNumber = 4;
 setStrikeBool= false;
 setSpareBool = false;
+setFailBool = true;
 
 setScoreThrows = [5,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1];

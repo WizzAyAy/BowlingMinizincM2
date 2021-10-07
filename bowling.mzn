@@ -8,16 +8,35 @@ array[1..20] of int: setScoreThrows;
 
 var int: nbStrike;
 var int: nbSpare;
+var int: nbFail;
 
 int: fixedStrikeNumber;
 int: fixedSpareNumber;
+int: fixedFailNumber;
 
 bool: setStrikeBool;
 bool: setSpareBool;
+bool: setFailBool;
 
-constraint if setStrikeBool == true then nbStrike = fixedStrikeNumber endif;
-constraint if setSpareBool == true then nbSpare = fixedSpareNumber endif;
+%set nb strike
+constraint if setStrikeBool == true 
+  then nbStrike = fixedStrikeNumber 
+endif;
+constraint nbStrike = sum(i in 1..19 where i mod 2 = 1)(bool2int(strike(i))) + bool2int(strike(20)) + bool2int(strike(21));
 
+%set nb spare
+constraint if setSpareBool == true 
+  then nbSpare = fixedSpareNumber
+endif;
+constraint nbSpare = sum(i in 1..19 where i mod 2 = 1)(bool2int(spare(i)));
+
+%set nb fail
+constraint if setFailBool == true 
+  then nbFail = fixedFailNumber
+endif;
+constraint nbFail = sum(i in 1..20 where i mod 2 = 1)(bool2int(throws[i] == 0) + bool2int(throws[i+1] == 0 /\ throws[i] != 10)) + bool2int(throws[21] == 0 /\ throws[19] + throws[20] == 10);
+
+%set score for index
 constraint forall(i in 1..20)(
   setScoreThrows[i] != -1 -> setScoreThrows[i] = throws[i]
 );
@@ -94,11 +113,6 @@ constraint (not strike(19) /\ not spare(19)) -> throws[21] = 0;
 constraint throws[19] = 10 -> score = sum(i in 1..19)(throws[i]) + sum(bonus);
 constraint throws[19] < 10 -> score = sum(i in 1..20)(throws[i]) + sum(bonus);
 
-constraint nbStrike = sum(i in 1..19 where i mod 2 = 1)(bool2int(strike(i))) 
- + bool2int(strike(20)) + bool2int(strike(21));
-
-constraint nbSpare = sum(i in 1..19 where i mod 2 = 1)(bool2int(spare(i)));
-
 solve :: int_search(throws, first_fail, indomain_max, complete) satisfy;
 
 output
@@ -110,6 +124,8 @@ output
 ++
 ["nbStrike = " ++ show(nbStrike) ++ "\n"]
 ++
-["nbSpare = " ++ show(nbSpare) ++ "\n"];
+["nbSpare = " ++ show(nbSpare) ++ "\n"]
+++
+["nbFail = " ++ show(nbFail) ++ "\n"];
 
 
