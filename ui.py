@@ -27,16 +27,46 @@ def go_score():
     bowling = Model("./bowling.mzn")
     gecode = Solver.lookup("gecode")
     instance = Instance(gecode, bowling)
-    if not(check_int(score_entry.get())): 
-        print("Mauvais score syntaxe")
-        return
 
-    score = int(score_entry.get())
     set_score_throws = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
 
     for i in range(20):
         if(check_int(button_set_score_throws[i].get())):
             set_score_throws[i] = int(button_set_score_throws[i].get())
+
+    every_throws_set = True
+    
+    for i in range(len(set_score_throws)):
+        if set_score_throws[i] == -1:
+             every_throws_set = False
+    
+    if not(every_throws_set) and not(check_int(score_entry.get()):
+        fixed_game = [
+            ('Tour : ','n°1','n°2','n°3','n°4', 'n°5', 'n°6', 'n°7', 'n°8', 'n°9', 'n°10'),
+            ('Points : ', 
+            str(throws[0]) + ' | ' + str(throws[1]),
+            str(throws[2]) + ' | ' + str(throws[3]),
+            str(throws[4]) + ' | ' + str(throws[5]),
+            str(throws[6]) + ' | ' + str(throws[7]),
+            str(throws[8]) + ' | ' + str(throws[9]),
+            str(throws[10]) + ' | ' + str(throws[11]),
+            str(throws[12]) + ' | ' + str(throws[13]),
+            str(throws[14]) + ' | ' + str(throws[15]),
+            str(throws[16]) + ' | ' + str(throws[17]),
+            str(throws[18]) + ' | ' + str(throws[19])
+            ),
+            ('Strike : ', nb_strike, 'Spare : ', nb_spare, 'Failed : ', nb_fail, '', '', '', 'Score :', score),
+        ]    
+        total_rows = len(fixed_game) 
+        total_columns = len(fixed_game[0])
+        Table(new_window,fixed_game,total_rows,total_columns, set_score_throws)
+
+
+
+    if not(check_int(score_entry.get())): 
+        print("Mauvais score syntaxe")
+        return
+    score = int(score_entry.get())
 
     if(check_int(spare_entry.get())):
         instance["fixedSpareNumber"] = int(spare_entry.get())
