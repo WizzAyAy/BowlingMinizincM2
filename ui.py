@@ -2,9 +2,11 @@ from minizinc import Instance, Model, Solver, Status
 from tkinter import *
 
 root = Tk()
+root.title("Projet Minizinc")
 
 class Table: 
-    def __init__(self,root,tab,total_rows, total_columns,set_score_throws) : 
+    def __init__(self,root,tab,total_rows, total_columns,set_score_throws) :
+        root.title("Tableau des lancés") 
         for i in range(total_rows): 
             for j in range(total_columns): 
                 if i == 1 and (j < 10 and (set_score_throws[(j-1)*2] != -1 or set_score_throws[(j-1)*2 + 1] != -1)):
